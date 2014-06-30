@@ -26,6 +26,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import randy.core.CoreAPI;
 import randy.core.CoreScoreboard;
 import randy.core.tools.CoreDatabase;
+import randy.spawnutility.Config;
+import randy.spawnutility.PlayerJoin;
+import randy.spawnutility.ScrollingText;
+import randy.spawnutility.SetPosition;
+import core.Custody.Custody;
 
 public class main extends JavaPlugin implements Listener{
 	
@@ -89,7 +94,7 @@ public class main extends JavaPlugin implements Listener{
 			
 			//Spawn
 			if(commandName.equalsIgnoreCase("spawn")){
-				CoreAPI.ExitGameModes(player);
+				Custody.switchCustody(player);
 				TeleportPlayerToSpawn(player);
 				
 				//CreateScoreboard(player.getName());

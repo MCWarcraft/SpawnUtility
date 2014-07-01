@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,13 +23,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import randy.core.CoreAPI;
-import randy.core.CoreScoreboard;
-import randy.core.tools.CoreDatabase;
-import randy.spawnutility.Config;
-import randy.spawnutility.PlayerJoin;
-import randy.spawnutility.ScrollingText;
-import randy.spawnutility.SetPosition;
+import randy.core.tools.CoreDatabaseConnector;
 import core.Custody.Custody;
+import core.Scoreboard.CoreScoreboardManager;
+import core.Scoreboard.DisplayBoard;
 
 public class main extends JavaPlugin implements Listener{
 	
@@ -52,6 +48,8 @@ public class main extends JavaPlugin implements Listener{
 	//WHO
 	public static ArrayList<String> owners = new ArrayList<String>();
 	public static ArrayList<String> staff = new ArrayList<String>();
+	
+	private static CoreDatabaseConnector coreDatabaseConnector;
 	
 	//Timer
 	Timer timer = new Timer();
@@ -79,11 +77,17 @@ public class main extends JavaPlugin implements Listener{
 		
 		Config.LoadConfig();
 		
-		startTimer();
+		//////////////////
+		//UNCOMMENT THIS//
+		//////////////////
+		
+		//startTimer();
 		
 		scrollingTextList.add(new ScrollingText("Purchase a Rank for multipliers and more!", ""+ChatColor.WHITE));
 		scrollingTextList.add(new ScrollingText("[LEGION]", ChatColor.RED + "Rank: " + ChatColor.AQUA));
 		scrollingTextList.add(new ScrollingText("www.mcwarcraft.com",""+ChatColor.WHITE));
+		
+		coreDatabaseConnector = new CoreDatabaseConnector();
 		
 		System.out.print("[SpawnUtility] Succesfully enabled.");
 	}
@@ -94,7 +98,6 @@ public class main extends JavaPlugin implements Listener{
 			
 			//Spawn
 			if(commandName.equalsIgnoreCase("spawn")){
-				Custody.switchCustody(player);
 				TeleportPlayerToSpawn(player);
 				
 				//CreateScoreboard(player.getName());
@@ -335,6 +338,8 @@ public class main extends JavaPlugin implements Listener{
 	 }
 	
 	public static void TeleportPlayerToSpawn(Player player){
+
+		Custody.switchCustody(player, "spn");
 		
 		//Teleport
 		player.teleport(spawnLocation);
@@ -359,12 +364,15 @@ public class main extends JavaPlugin implements Listener{
 		//Remove player from other plugins
 		CoreAPI.ExitGameModes(player);
 		
-		CoreScoreboard.UpdateScoreboard(player.getName());
+		GenerateScoreboard(player);
+		CoreScoreboardManager.getDisplayBoard(player).update(true);
 	}
 	
-	public static void UpdateScoreboard(String player){	
+	public static void GenerateScoreboard(Player player){	
 		
+		//TODO: Migrate scrolling headers to the DisplayBoard
 		//System.out.print("Updating scoreboard of " + player);
+		/*
 		ScrollingText scrollingText = scrollingTextMap.get(player);
 		if(scrollingText == null){
 			scrollingText = new ScrollingText("Welcome " + player, ""+ChatColor.GOLD + ChatColor.BOLD);
@@ -372,9 +380,14 @@ public class main extends JavaPlugin implements Listener{
 			scrollingText.Update();
 			scrollingTextList.add(scrollingText);
 		}
+		*/
 		
-		textRank.put(player, (int)CoreDatabase.GetCurrencyMultiplier(player));
-		textHonor.put(player, CoreDatabase.GetCurrency(player));
+		//////////////////
+		//UNCOMMENT THIS//
+		//////////////////
+		
+		//textRank.put(player, (int)CoreDatabase.GetCurrencyMultiplier(player));
+		//textHonor.put(player, CoreDatabase.GetCurrency(player));
 		
 		//Dynamic rank stuff
 		/*int rank = textRank.get(player);
@@ -391,6 +404,11 @@ public class main extends JavaPlugin implements Listener{
 			rankMessage = "  ";
 		}*/
 		
+		//////////////////
+		//UNCOMMENT THIS//
+		//////////////////
+		
+		/*
 		CoreScoreboard.SetTitle(player, scrollingText.GetString());
 		CoreScoreboard.SetScore(player, ""+ChatColor.GREEN + ChatColor.BOLD + "Honor Points", "spn", 15);
 		CoreScoreboard.SetScore(player, ""+ChatColor.WHITE + ChatColor.BOLD + textHonor.get(player), "spn", 14);
@@ -402,6 +420,16 @@ public class main extends JavaPlugin implements Listener{
 		CoreScoreboard.SetScore(player, ""+ChatColor.WHITE + CoreDatabase.GetTotalDeaths(player), "spn", 8);
 		CoreScoreboard.SetScore(player, "     ", "spn", 7);
 		CoreScoreboard.SetScore(player, ""+ChatColor.WHITE + "--------------", "spn", 6);
+		*/
+		
+		DisplayBoard tempBoard = CoreScoreboardManager.getDisplayBoard(player);
+		tempBoard.setTitle("Welcome!");
+		tempBoard.putHeader("---------------");
+		tempBoard.putField(ChatColor.GREEN + "Honor: ", coreDatabaseConnector, player.getName() + "|" + "honor");
+		tempBoard.putSpace();
+		tempBoard.putField(ChatColor.GOLD + "Kills: ", coreDatabaseConnector, player.getName() + "|" + "honor");
+		tempBoard.putField(ChatColor.GOLD + "Deaths: ", coreDatabaseConnector, player.getName() + "|" + "deaths");
+		tempBoard.putHeader("---------------");
 	}
 	
 	public static void SetRank(String player, int rank){
@@ -416,26 +444,27 @@ public class main extends JavaPlugin implements Listener{
 		textHonor.put(player, honor);
 	}
 	
+	/*
 	private void startTimer(){
 
 		//Start timer, triggers every 0.1th of a second
-		timerTask = new TimerTask() {
-			public void run() {
-				List<String> players = CoreScoreboard.GetGamemodePlayers("spn");
-				//System.out.print("Player list size: " + players.size());
-				for(int e = 0; e < players.size(); e++){
-					String playerName = players.get(e);
-					Player player = Bukkit.getPlayer(playerName);
-					if(player != null){
-						CoreScoreboard.UpdateScoreboard(playerName);
-					}
-				}
+		timerTask = new TimerTask()
+		{
+			public void run()
+			{
+				HashMap<String, String> custody = Custody.getAllCustody();
 				
-				for(int i = 0; i < scrollingTextList.size(); i++){
+				//Loop over all players
+				for(String playerName : custody.keySet())
+					if (custody.get(playerName).equalsIgnoreCase("spn"))
+						CoreScoreboardManager.getDisplayBoard(Bukkit.getPlayer(playerName)).update();
+				
+				for(int i = 0; i < scrollingTextList.size(); i++)
 					scrollingTextList.get(i).Update();
-				}
 			}
 		};
 		timer.schedule(timerTask, 100, 100);
 	}
+	*/
+	
 }

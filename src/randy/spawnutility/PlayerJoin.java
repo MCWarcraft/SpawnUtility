@@ -17,7 +17,9 @@ public class PlayerJoin implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event){
+		System.out.println("Pre TP");
 		main.TeleportPlayerToSpawn(event.getPlayer());
+		System.out.println("Post TP");
 		
 		event.setJoinMessage(ChatColor.WHITE + event.getPlayer().getName() + ChatColor.GRAY + " joined.");
 		event.getPlayer().sendMessage(ChatColor.RED + "Welcome to " + ChatColor.GOLD + "Mc" + ChatColor.GRAY + "Warcraft" + ChatColor.RED + "! Type /help for help.");

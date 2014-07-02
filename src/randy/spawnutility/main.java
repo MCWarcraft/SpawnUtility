@@ -423,7 +423,7 @@ public class main extends JavaPlugin implements Listener{
 		*/
 		
 		DisplayBoard tempBoard = CoreScoreboardManager.getDisplayBoard(player);
-		tempBoard.setTitle("Welcome!");
+		tempBoard.setTitle("Welcome!", "");
 		tempBoard.putHeader("---------------");
 		tempBoard.putField(ChatColor.GREEN + "Honor: ", coreDatabaseConnector, player.getName() + "|" + "honor");
 		tempBoard.putSpace();

@@ -1,7 +1,6 @@
 name: SpawnUtility
-main: randy.spawnutility.main
+main: spawnutility.SpawnUtility
 version: 1.0
-#depend: [HonorPoints,FFA,Kits]
 depend: [CorePlugin]
 commands:
   spawn:
@@ -9,16 +8,4 @@ commands:
     usage: /<command>
   setspawn:
     description: Set spawn point
-    usage: /<command>
-  kill:
-    description: The kill command
-    usage: /<command>
-  owner:
-    description: Tags a player as owner
-    usage: /<command> playername
-  staff:
-    description: Tags a player as staff
-    usage: /<command> playername
-  who:
-    description: Gets all players currently online
     usage: /<command>

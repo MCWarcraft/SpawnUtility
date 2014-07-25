@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import core.Custody.Custody;
@@ -12,6 +11,7 @@ import core.HonorPoints.HonorConnector;
 import core.Scoreboard.CoreScoreboardManager;
 import core.Scoreboard.DisplayBoard;
 import core.Utilities.CoreItems;
+import core.Utilities.CoreUtilities;
 import core.Utilities.LocationParser;
 
 public class SpawnUtility extends JavaPlugin
@@ -56,6 +56,7 @@ public class SpawnUtility extends JavaPlugin
 		this.spawnLocation = spawnLocation;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void teleportToSpawn(Player player)
 	{
 		if (spawnLocation == null)
@@ -69,9 +70,9 @@ public class SpawnUtility extends JavaPlugin
 		//Teleport
 		player.teleport(spawnLocation);
 		//Give proper inventory
-		player.getInventory().clear();
-		player.getInventory().setArmorContents(new ItemStack[4]);
+		CoreUtilities.resetPlayerState(player, true);
 		player.getInventory().addItem(CoreItems.COMPASS);
+		player.updateInventory();
 		//Generate scoreboard format
 		generateScoreboard(player);
 		//Update and show
@@ -82,9 +83,9 @@ public class SpawnUtility extends JavaPlugin
 	{
 		DisplayBoard tempBoard = CoreScoreboardManager.getDisplayBoard(player);
 		tempBoard.setTitle("Welcome to MCWarcraft " + player.getName() + "!", "");
-		tempBoard.putHeader("---------------");
+		tempBoard.putDivider();
 		tempBoard.putField(ChatColor.GREEN + "Honor: ", honorConnector, player.getName());
-		tempBoard.putHeader("---------------");
+		tempBoard.putDivider();
 	}
 	
 	public void saveData()

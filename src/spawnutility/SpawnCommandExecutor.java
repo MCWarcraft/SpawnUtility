@@ -6,6 +6,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import core.Utilities.LocationSelector;
+
 public class SpawnCommandExecutor implements CommandExecutor
 {
 	private SpawnUtility plugin;
@@ -32,15 +34,15 @@ public class SpawnCommandExecutor implements CommandExecutor
 			return true;
 		}
 		//If the player is trying to set spawn
-		else if (commandName.equalsIgnoreCase("setspawn"))
+		else if (commandName.equalsIgnoreCase("setspawn") && player.hasPermission("spawnutility.setspawn"))
 		{
-			if(player.hasPermission("SpawnUtility.setspawn"))
+			if (LocationSelector.getSelectedLocation(player.getName()) != null)
 			{
-				SpawnListener.stickPlayer = player;
-				player.sendMessage(ChatColor.GREEN + "Right click a block with a stick to set the spawn.");
+				plugin.setSpawnLocation(LocationSelector.getSelectedLocation(player.getName()));
+				player.sendMessage(ChatColor.GREEN + "The spawn has been set.");
 			}
 			else
-				player.sendMessage(ChatColor.RED + "You don't have permission to do that.");
+				player.sendMessage(ChatColor.RED + "Please select a location with a stick.");
 			
 			return true;
 		}

@@ -9,3 +9,7 @@ commands:
   setspawn:
     description: Set spawn point
     usage: /<command>
+permissions:
+  spawnutility.setspawn:
+    description: 'Allows the use of /setspawn'
+    default: op

@@ -8,13 +8,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import core.Custody.Custody;
 import core.HonorPoints.HonorConnector;
+import core.Save.CoreSavable;
+import core.Save.CoreSaveManager;
 import core.Scoreboard.CoreScoreboardManager;
 import core.Scoreboard.DisplayBoard;
 import core.Utilities.CoreItems;
 import core.Utilities.CoreUtilities;
 import core.Utilities.LocationParser;
 
-public class SpawnUtility extends JavaPlugin
+public class SpawnUtility extends JavaPlugin implements CoreSavable
 {
 	//Location
 	private Location spawnLocation;
@@ -32,6 +34,8 @@ public class SpawnUtility extends JavaPlugin
 		getCommand("setspawn").setExecutor(spawnCommandExecutor);
 		
 		loadData();
+		
+		CoreSaveManager.addSavable(this);
 		
 		getServer().getLogger().info("[SpawnUtility] Succesfully enabled.");
 	}
@@ -97,5 +101,11 @@ public class SpawnUtility extends JavaPlugin
 	public void loadData()
 	{
 		setSpawnLocation(LocationParser.parseLocation(getConfig().getString("spawn")));
+	}
+	
+	@Override
+	public void coreSave()
+	{
+		saveData();
 	}
 }

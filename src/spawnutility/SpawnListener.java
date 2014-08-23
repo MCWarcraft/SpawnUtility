@@ -1,13 +1,13 @@
 package spawnutility;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import core.Event.PlayerVoidDamageEvent;
 
 public class SpawnListener implements Listener
 {
@@ -33,14 +33,12 @@ public class SpawnListener implements Listener
 		event.getPlayer().sendMessage(ChatColor.RED + "Welcome to " + ChatColor.GOLD + "Mc" + ChatColor.GRAY + "Warcraft" + ChatColor.RED + "! Type /help for help.");
 	}
 	
-	@EventHandler
-	public void onPlayerDamage(EntityDamageEvent event)
+	@EventHandler (priority = EventPriority.HIGHEST)
+	public void onPlayerVoidDamage(PlayerVoidDamageEvent event)
 	{
-		if (event.getCause() != DamageCause.VOID)
+		if (event.isUsed())
 			return;
-		if (!(event.getEntity() instanceof Player))
-			return;
-		Player player = (Player) event.getEntity();
-		plugin.teleportToSpawn(player);
+		plugin.teleportToSpawn(event.getPlayer());
+		event.use();
 	}
 }

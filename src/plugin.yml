@@ -2,6 +2,7 @@ name: SpawnUtility
 main: spawnutility.SpawnUtility
 version: 1.0
 depend: [CorePlugin]
+softdepend: [Multiverse-Core]
 commands:
   spawn:
     description: Return to spawn

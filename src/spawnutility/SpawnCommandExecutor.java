@@ -36,9 +36,9 @@ public class SpawnCommandExecutor implements CommandExecutor
 		//If the player is trying to set spawn
 		else if (commandName.equalsIgnoreCase("setspawn") && player.hasPermission("spawnutility.setspawn"))
 		{
-			if (LocationSelector.getSelectedLocation(player.getName()) != null)
+			if (LocationSelector.getSelectedLocation(player.getUniqueId()) != null)
 			{
-				plugin.setSpawnLocation(LocationSelector.getSelectedLocation(player.getName()));
+				plugin.setSpawnLocation(LocationSelector.getSelectedLocation(player.getUniqueId()));
 				player.sendMessage(ChatColor.GREEN + "The spawn has been set.");
 			}
 			else

@@ -88,7 +88,7 @@ public class SpawnUtility extends JavaPlugin implements CoreSavable
 		DisplayBoard tempBoard = CoreScoreboardManager.getDisplayBoard(player);
 		tempBoard.setTitle("Welcome to MCWarcraft " + player.getName() + "!", "");
 		tempBoard.putDivider();
-		tempBoard.putField(ChatColor.GREEN + "Honor: ", honorConnector, player.getName());
+		tempBoard.putField(ChatColor.GREEN + "Honor: ", honorConnector, player.getUniqueId().toString());
 		tempBoard.putDivider();
 	}
 	

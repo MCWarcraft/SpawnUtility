@@ -18,21 +18,6 @@ public class SpawnListener implements Listener
 		this.plugin = plugin;
 	}
 	
-	@EventHandler
-	public void onPlayerQuit(PlayerQuitEvent event)
-	{
-		event.setQuitMessage(ChatColor.WHITE + event.getPlayer().getName() + ChatColor.GRAY + " left.");
-	}
-	
-	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent event)
-	{
-		//plugin.teleportToSpawn(event.getPlayer());
-		
-		event.setJoinMessage(ChatColor.WHITE + event.getPlayer().getName() + ChatColor.GRAY + " joined.");
-		event.getPlayer().sendMessage(ChatColor.RED + "Welcome to " + ChatColor.GOLD + "Mc" + ChatColor.GRAY + "Warcraft" + ChatColor.RED + "! Type /help for help.");
-	}
-	
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onPlayerVoidDamage(PlayerVoidDamageEvent event)
 	{
